@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  pipeline:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - GCP_REGION=${GCP_REGION:-europe-west1}
+      - PUBSUB_TOPIC=${PUBSUB_TOPIC:-scraper-results}
+      - BIGQUERY_DATASET=${BIGQUERY_DATASET:-pipeline_data}
+      - GCS_BUCKET=${GCS_BUCKET}
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
+    volumes:
+      - ./service-account.json:/app/service-account.json:ro
+    restart: unless-stopped
+
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    ports:
+      - "8085:8085"
+
+  bigquery-emulator:
+    image: ghcr.io/goccy/bigquery-emulator:latest
+    ports:
+      - "9050:9050"
+    command: --project=${GCP_PROJECT_ID:-test-project} --dataset=${BIGQUERY_DATASET:-pipeline_data}
