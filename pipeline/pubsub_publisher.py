@@ -2,9 +2,9 @@
 Google Cloud Pub/Sub publisher for the data pipeline.
 Handles message publishing with batching, ordering, and error handling.
 """
+
 import json
-import logging
-from typing import Any, Optional
+from typing import Optional
 from concurrent.futures import TimeoutError
 
 from google.cloud import pubsub_v1
@@ -32,7 +32,7 @@ class PubSubPublisher:
         topic_id: str,
         batch_max_messages: int = 100,
         batch_max_bytes: int = 1_000_000,  # 1MB
-        batch_max_latency: float = 0.01,   # 10ms
+        batch_max_latency: float = 0.01,  # 10ms
     ):
         self.project_id = project_id
         self.topic_id = topic_id

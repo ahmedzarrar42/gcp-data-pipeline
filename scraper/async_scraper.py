@@ -2,9 +2,8 @@
 Async HTTP scraper using aiohttp with BeautifulSoup parsing.
 Suitable for static HTML pages with high throughput requirements.
 """
-import asyncio
+
 from typing import Optional, Callable
-from datetime import datetime
 
 import aiohttp
 from bs4 import BeautifulSoup

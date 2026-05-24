@@ -1,9 +1,8 @@
 """
 Google BigQuery data loader with streaming inserts and schema management.
 """
-import json
+
 from typing import Optional
-from datetime import datetime
 
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
@@ -141,9 +140,7 @@ class BigQueryLoader:
         Returns:
             List of row dicts
         """
-        job_config = bigquery.QueryJobConfig(
-            query_parameters=params or []
-        )
+        job_config = bigquery.QueryJobConfig(query_parameters=params or [])
 
         self.logger.info("running_query", sql=sql[:100])
         query_job = self.client.query(sql, job_config=job_config)
@@ -172,9 +169,7 @@ class BigQueryLoader:
             write_disposition=write_disposition,
         )
 
-        load_job = self.client.load_table_from_uri(
-            gcs_uri, table_ref, job_config=job_config
-        )
+        load_job = self.client.load_table_from_uri(gcs_uri, table_ref, job_config=job_config)
 
         self.logger.info(
             "gcs_load_started",

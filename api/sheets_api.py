@@ -2,8 +2,8 @@
 Google Sheets API integration for reading and writing pipeline data.
 Uses service account authentication for server-to-server access.
 """
-from typing import Optional, Union
-from pathlib import Path
+
+from typing import Optional
 
 import gspread
 from google.oauth2.service_account import Credentials
@@ -37,22 +37,16 @@ class SheetsAPI:
         credentials_dict: Optional[dict] = None,
     ):
         if credentials_dict:
-            creds = Credentials.from_service_account_info(
-                credentials_dict, scopes=SCOPES
-            )
+            creds = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
         elif credentials_path:
-            creds = Credentials.from_service_account_file(
-                credentials_path, scopes=SCOPES
-            )
+            creds = Credentials.from_service_account_file(credentials_path, scopes=SCOPES)
         else:
             raise ValueError("Provide either credentials_path or credentials_dict")
 
         self.client = gspread.authorize(creds)
         self.logger = structlog.get_logger(self.__class__.__name__)
 
-    def get_sheet(
-        self, spreadsheet_id: str, sheet_name: str
-    ) -> gspread.Worksheet:
+    def get_sheet(self, spreadsheet_id: str, sheet_name: str) -> gspread.Worksheet:
         """Open a specific worksheet by spreadsheet ID and sheet name."""
         spreadsheet = self.client.open_by_key(spreadsheet_id)
         return spreadsheet.worksheet(sheet_name)
@@ -72,9 +66,7 @@ class SheetsAPI:
         )
         return records
 
-    def read_column(
-        self, spreadsheet_id: str, sheet_name: str, col: int = 1
-    ) -> list[str]:
+    def read_column(self, spreadsheet_id: str, sheet_name: str, col: int = 1) -> list[str]:
         """Read all values from a specific column (1-indexed)."""
         sheet = self.get_sheet(spreadsheet_id, sheet_name)
         values = sheet.col_values(col)
@@ -154,6 +146,4 @@ class SheetsAPI:
         if include_headers:
             rows = [headers] + rows
 
-        self.write_rows(
-            spreadsheet_id, sheet_name, rows, clear_first=True
-        )
+        self.write_rows(spreadsheet_id, sheet_name, rows, clear_first=True)

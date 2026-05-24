@@ -1,9 +1,9 @@
 """
 Tests for the async scraper module.
 """
+
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from datetime import datetime
 
 from scraper.base_scraper import ScrapeResult, RateLimiter
 from scraper.async_scraper import AsyncScraper
@@ -42,6 +42,7 @@ class TestRateLimiter:
     @pytest.mark.asyncio
     async def test_rate_limiting_slows_requests(self):
         import time
+
         limiter = RateLimiter(rate=100.0)  # High rate — should be fast
         start = time.monotonic()
         for _ in range(5):

@@ -1,12 +1,12 @@
 """
 Base scraper with retry logic, rate limiting, and structured logging.
 """
+
 import asyncio
-import logging
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Optional
 from datetime import datetime
 
 import structlog
@@ -130,7 +130,7 @@ class BaseScraper(ABC):
                         error=str(e),
                     )
 
-                backoff = self.backoff_factor ** attempt
+                backoff = self.backoff_factor**attempt
                 self.logger.info("retrying", url=url, backoff_seconds=backoff)
                 await asyncio.sleep(backoff)
 

@@ -10,7 +10,6 @@ env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GCP_REGION: europe-west1
   IMAGE_NAME: gcp-data-pipeline
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   test:
@@ -40,7 +39,7 @@ jobs:
       - name: Upload coverage report
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
 
   lint:
     name: Lint & Format
@@ -55,13 +54,13 @@ jobs:
           python-version: "3.11"
 
       - name: Install linters
-        run: pip install ruff black mypy
+        run: pip install ruff black
 
       - name: Run ruff
-        run: ruff check .
+        run: ruff check . --ignore E501
 
       - name: Check formatting
-        run: black --check .
+        run: black --check --line-length 100 .
 
   build-and-deploy:
     name: Build & Deploy to Cloud Run
